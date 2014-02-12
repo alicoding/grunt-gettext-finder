@@ -27,7 +27,7 @@ module.exports = function(grunt) {
       files: [ "tmp/views/*.html", "tmp/views/**/*.html" ],
       options: {
         pathToJSON: [ "tmp/locale/en_US/*.json" ],
-        ignoreKeys: [ "Blah", "just a var key name", "what does the fox say" ],
+        ignoreKeys: [ "Blah", "just a var key name", "what does the fox say"],
       },
     }
   });

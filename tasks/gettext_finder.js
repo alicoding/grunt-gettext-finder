@@ -29,15 +29,15 @@ module.exports = function (grunt) {
     this.filesSrc.forEach(function (f) {
       if (grunt.file.exists(f)) {
         var content = grunt.file.read(f);
-        var re = content.replace(/gettext\(["']([^'")]+)["']\)/g, function(wholeMatch, key) {
+        var re = content.replace(/gettext\(["']([^)]+)["']\)/g, function(wholeMatch, key) {
           keys.push(key);
           return wholeMatch;
         });
       }
     });
 
-    var compare = _.difference(localeJSON, options.ignoreKeys);
-    var diff = _.difference(compare, keys);
+    var compare = _.difference(localeJSON, keys);
+    var diff = _.difference(compare, options.ignoreKeys);
 
     if (!diff.length) {
       grunt.log.ok("No unused key names found in JSON provided.\n");
