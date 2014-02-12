@@ -12,6 +12,7 @@ module.exports = function(grunt) {
 
   // Project configuration.
   grunt.initConfig({
+
     jshint: {
       all: [
         'Gruntfile.js',
@@ -23,16 +24,10 @@ module.exports = function(grunt) {
     },
     // Configuration to be run (and then tested).
     gettext_finder: {
-      find: {
-        options: {
-          pathToJSON: "locale/en_US/msg.json",
-          ignoreKeys: {
-            "list": ["hello", "blah", "duh"],
-          },
-        },
-        files: {
-          "templates": ["views/*.html", "views/**/*.html"],
-        },
+      files: [ "tmp/views/*.html", "tmp/views/**/*.html" ],
+      options: {
+        pathToJSON: [ "tmp/locale/en_US/*.json" ],
+        ignoreKeys: [ "Blah", "just a var key name", "what does the fox say" ],
       },
     }
   });

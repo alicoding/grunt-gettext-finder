@@ -5,43 +5,45 @@
  * Copyright (c) 2014 Ali Al Dallal
  * Licensed under the MIT license.
  */
-
 'use strict';
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
+  var _ = require('lodash');
+  var path = require('path');
 
-  // Please see the Grunt documentation for more information regarding task
-  // creation: http://gruntjs.com/creating-tasks
+  grunt.registerMultiTask('gettext_finder', 'gettext finder', function () {
+    var options = this.options();
+    var localeJSON = {};
+    var files = grunt.file.expand({
+            filter: function (filePath) {
+              return path.basename(filePath)[0] !== '_';
+            }
+          }, options.pathToJSON);
+    var keys = [];
 
-  grunt.registerMultiTask('gettext_finder', 'gettext finder', function() {
-    // Merge task-specific and/or target-specific options with these defaults.
-    var options = this.options;
-console.log(options);
-    // Iterate over all specified file groups.
-    this.files.forEach(function(f) {
-      // Concat specified files.
-      var src = f.src.filter(function(filepath) {
-        // Warn on and remove invalid source files (if nonull was set).
-        if (!grunt.file.exists(filepath)) {
-          grunt.log.warn('Source file "' + filepath + '" not found.');
-          return false;
-        } else {
-          return true;
-        }
-      }).map(function(filepath) {
-        // Read file source.
-        return grunt.file.read(filepath);
-      }).join(grunt.util.normalizelf("options.ignoreKeys"));
-
-      // Handle options.
-      src += options.punctuation;
-
-      // Write the destination file.
-      grunt.file.write(f.dest, src);
-
-      // Print a success message.
-      grunt.log.writeln('File "' + f.dest + '" created.');
+    files.forEach(function(f, i) {
+      localeJSON = _.merge(localeJSON, grunt.file.readJSON(f));
     });
-  });
+    localeJSON = _.keys(localeJSON);
 
+    this.filesSrc.forEach(function (f) {
+      if (grunt.file.exists(f)) {
+        var content = grunt.file.read(f);
+        var re = content.replace(/gettext\(["']([^'")]+)["']\)/g, function(wholeMatch, key) {
+          keys.push(key);
+          return wholeMatch;
+        });
+      }
+    });
+
+    var compare = _.difference(localeJSON, options.ignoreKeys);
+    var diff = _.difference(compare, keys);
+
+    if (!diff.length) {
+      grunt.log.ok("No unused key names found in JSON provided.\n");
+    } else {
+      grunt.log.warn("Found unused key names in JSON provided.\n",
+        "Please consider removing them or add to the ignoreKeys.\n list:", diff);
+    }
+  });
 };

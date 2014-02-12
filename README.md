@@ -2,6 +2,8 @@
 
 > gettext finder
 
+This plugin will read all given template files and look for `gettext('keynames')` and try to compare with list of key names from given JSON blob file to look for unused key names.
+
 ## Getting Started
 This plugin requires Grunt `~0.4.2`
 
@@ -24,66 +26,28 @@ In your project's Gruntfile, add a section named `gettext_finder` to the data ob
 
 ```js
 grunt.initConfig({
-  gettext_finder: {
-    options: {
-      // Task-specific options go here.
+    gettext_finder: {
+      files: [ "views/*.html", "views/**/*.html" ],
+      options: {
+        pathToJSON: [ "locale/en_US/*.json" ],
+        ignoreKeys: [ "Blah", "just a var key name", "what does the fox say" ],
+      },
     },
-    your_target: {
-      // Target-specific file lists and/or options go here.
-    },
-  },
 });
 ```
 
 ### Options
 
-#### options.separator
-Type: `String`
-Default value: `',  '`
+#### options.pathToJSON
+Type: `Array`
 
-A string value that is used to do something with whatever.
+An array of path to JSON blob file(s).
 
-#### options.punctuation
-Type: `String`
-Default value: `'.'`
+#### options.ignoreKeys
+Type: `Array`
 
-A string value that is used to do something else with whatever else.
+An array of strings value that is used to ignore any keys that you don't want it to complain about.
 
-### Usage Examples
+#Support:
 
-#### Default Options
-In this example, the default options are used to do something with whatever. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result would be `Testing, 1 2 3.`
-
-```js
-grunt.initConfig({
-  gettext_finder: {
-    options: {},
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
-});
-```
-
-#### Custom Options
-In this example, custom options are used to do something else with whatever else. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result in this case would be `Testing: 1 2 3 !!!`
-
-```js
-grunt.initConfig({
-  gettext_finder: {
-    options: {
-      separator: ': ',
-      punctuation: ' !!!',
-    },
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
-});
-```
-
-## Contributing
-In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
-
-## Release History
-_(Nothing yet)_
+Currently we support both `.html` and `.ejs`.
