@@ -26,12 +26,19 @@ module.exports = function (grunt) {
     });
     localeJSON = _.keys(localeJSON);
 
+    var regexps = [
+      /gettext\(["']([^)]+)["']\)/g
+    ].concat(this.options().extraSearchRegexp || []);
+
     this.filesSrc.forEach(function (f) {
       if (grunt.file.exists(f)) {
         var content = grunt.file.read(f);
-        var re = content.replace(/gettext\(["']([^)]+)["']\)/g, function(wholeMatch, key) {
-          keys.push(key);
-          return wholeMatch;
+
+        regexps.forEach(function (regexp) {
+          content.replace(regexp, function (wholeMatch, key) {
+            keys.push(key);
+            return wholeMatch;
+          });
         });
       }
     });
@@ -39,11 +46,20 @@ module.exports = function (grunt) {
     var compare = _.difference(localeJSON, keys);
     var diff = _.difference(compare, options.ignoreKeys);
 
-    if (!diff.length) {
-      grunt.log.ok("No unused key names found in JSON provided.\n");
+    var inverseCompare = _.difference(keys, localeJSON);
+    var inverseDiff = _.difference(inverseCompare, options.ignoreKeys);
+
+    if (!diff.length && !inverseDiff.length) {
+      grunt.log.ok("No unused key names found in locale JSON provided.\n");
     } else {
-      grunt.log.warn("Found unused key names in JSON provided.\n",
-        "Please consider removing them or add to the ignoreKeys.\n list:", diff);
+      if (diff.length) {
+        grunt.log.warn("Found keys in locale JSON not used in given source.\n",
+          "Please consider removing them or add to the ignoreKeys.\n list:", diff);
+      }
+      if (inverseDiff.length) {
+        grunt.log.warn("Found keys in source not used in given locale JSON.\n",
+          "Please consider removing them or add to the ignoreKeys.\n list:", inverseDiff);
+      }
     }
   });
 };
