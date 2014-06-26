@@ -1,7 +1,7 @@
 {
   "name": "grunt-gettext-finder",
   "description": "gettext finder",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "homepage": "https://github.com/alicoding/grunt-gettext-finder",
   "author": {
     "name": "Ali Al Dallal",
