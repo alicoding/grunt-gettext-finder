@@ -12,6 +12,8 @@ module.exports = function (grunt) {
   var path = require('path');
 
   grunt.registerMultiTask('gettext_finder', 'gettext finder', function () {
+    var done = this.async();
+
     var options = this.options();
     var localeJSON = {};
     var files = grunt.file.expand({
@@ -51,6 +53,7 @@ module.exports = function (grunt) {
 
     if (!diff.length && !inverseDiff.length) {
       grunt.log.ok("No unused key names found in locale JSON provided.\n");
+      done(true);
     } else {
       if (diff.length) {
         grunt.log.warn("Found keys in locale JSON not used in given source.\n",
@@ -60,6 +63,7 @@ module.exports = function (grunt) {
         grunt.log.warn("Found keys in source not used in given locale JSON.\n",
           "Please consider removing them or add to the ignoreKeys.\n list:", inverseDiff);
       }
+      done(false);
     }
   });
 };
