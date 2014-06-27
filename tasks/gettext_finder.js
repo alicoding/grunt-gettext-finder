@@ -29,7 +29,7 @@ module.exports = function (grunt) {
     localeJSON = _.keys(localeJSON);
 
     var regexps = [
-      /gettext\(["']([^)]+)["']\)/g
+      /gettext\(["'][^)]+["']\)/g
     ].concat(this.options().extraSearchRegexp || []);
 
     this.filesSrc.forEach(function (f) {
@@ -38,7 +38,8 @@ module.exports = function (grunt) {
 
         regexps.forEach(function (regexp) {
           content.replace(regexp, function (wholeMatch, key) {
-            keys.push(key);
+            var match = (/\(["']([^)]+)["']\)/g).exec(wholeMatch);
+            keys.push(match[1]);
             return wholeMatch;
           });
         });
