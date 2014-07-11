@@ -38,7 +38,7 @@ module.exports = function (grunt) {
 
         regexps.forEach(function (regexp) {
           content.replace(regexp, function (wholeMatch, key) {
-            var match = (/\(["']([^)]+)["']\)/g).exec(wholeMatch);
+            var match = (/["']([^)]+)["']/g).exec(wholeMatch);
             keys.push(match[1]);
             return wholeMatch;
           });
